@@ -57,7 +57,7 @@ def Test(name, logfile,listOfValue)  :
                             reported_IndexError = True
                     else:
                         print("[%s] %s : %s"%(name,set[0],testvalue))
-                        if (abs(testvalue - set[1]) < set[2]) :             #set[1] is the target value / set[2] is the tolerance
+                        if (abs(testvalue - set[1]) <= set[2]) :            #set[1] is the target value / set[2] is the tolerance
                            if (testvalue != 0.0) :                          #Checks that it is not 0.0(failure)
                               success += 1
                               num_success +=1
