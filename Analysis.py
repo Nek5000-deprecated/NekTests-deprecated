@@ -2434,12 +2434,12 @@ if ifmpi:
 log = "./srl2Log/re10f1000p0001.log.1"
 value = [['total solver time',0.1,80,2],
          ['U-PRES ',0,27,6]]
-Run("Example strat-01/SRL: Serial-time/iter",log,value)
+Run("Example strat-01/SRL2: Serial-time/iter",log,value)
 
 log = "./srl2Log/re10f1000p1000.log.1"
 value = [['total solver time',0.1,80,2],
          ['U-PRES ',0,27,6]]
-Run("Example strat-1000/SRL: Serial-time/iter",log,value)
+Run("Example strat-1000/SRL2: Serial-time/iter",log,value)
 
 
 
