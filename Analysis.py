@@ -1199,7 +1199,7 @@ Run("Example expansion/SRL: Serial-time/iter",log,value)
 
 log = "./srlLog/expansion.err.1"
 value = [['ubar',2.0087E+00,1e-06,2]]
-Run("Example ext_cyl/SRL: Serial-error",log,value)
+Run("Example expansion/SRL: Serial-error",log,value)
 
 #MPI2 
 if ifmpi:
@@ -1228,7 +1228,7 @@ Run("Example expansion/SRL2: Serial-time/iter",log,value)
 
 log = "./srl2Log/expansion.err.1"
 value = [['ubar',2.0000E+00,1e-06,2]]
-Run("Example ext_cyl/SRL2: Serial-error",log,value)
+Run("Example expansion/SRL2: Serial-error",log,value)
 
 
 
