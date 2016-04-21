@@ -33,8 +33,7 @@ def Test(name, logfile,listOfValue)  :
         olog.close()
         inputisgood = True
     except IOError :
-        print("[%s]...Sorry, I must skip this test."%name)
-        print("[%s]...The logfile is missing or doesn't have the correct name..."%name)
+        print("[%s]  ERROR: Could not locate logfile (%s).  The logfile may be missing or named incorrectly."%(name,logfile))
         inputisgood = False
 
     #If we could find the log file, then we run the test    
@@ -49,28 +48,28 @@ def Test(name, logfile,listOfValue)  :
                         testvalue = float(line.split()[-set[3]])                 #the value is on the set[3]th column from the right of the line 
                     except (ValueError):
                         if not reported_ValueError:
-                            print("Warning: Attempted to parse non-numerical value for test \"%s\".  Logfile may be malformatted"%name)
+                            print("[%s : %s] WARNING: Attempted to parse non-numerical value in logfile (%s). The logfile may be malformatted."%(name,set[0],logfile))
                             reported_ValueError = True
                     except (IndexError):
                         if not reported_IndexError:
-                            print("Warning: Fewer columns than excpected for test \"%s\".  Logfile may be malformatted"%name)
+                            print("[%s : %s] WARNING: Fewer columns than in logfile (%s). The logfile may be malformatted."%(name,set[0],logfile))
                             reported_IndexError = True
                     else:
-                        print("[%s] %s : %s"%(name,set[0],testvalue))
-                        if (abs(testvalue - set[1]) <= set[2]) :            #set[1] is the target value / set[2] is the tolerance
-                           if (testvalue != 0.0) :                          #Checks that it is not 0.0(failure)
-                              success += 1
-                              num_success +=1
+                        if (abs(testvalue - set[1]) <= set[2] and testvalue != 0.0) :            #set[1] is the target value / set[2] is the tolerance
+                            print("[%s : %s] SUCCESS:  Test value (%g) was within tolerance of reference value (%g +/- %g)"%(name,set[0],testvalue,set[1],set[2]))
+                            success += 1
+                            num_success +=1
+                        else:
+                            print("[%s : %s] FAILURE:  Test value (%g) exceeded tolerance of reference value (%g +/- %g)"%(name,set[0],testvalue,set[1],set[2]))
                         listOfValue.remove(set)                             #The value was found so we remove it from the search
         log.close()
     if success == numTest :
         test_result = True
     elif (len(listOfValue) > 0) :
-        print("[%s]...I couldn't find all the requested value in the log file..."%name)
         slist = ""
         for set in listOfValue :
             slist = slist + set[0] + ", "
-        print("[%s]...%s were not found..."%(name,slist))
+        print("[%s] ERROR: The logfile (%s) was missing the following values: (%s)"%(name,logfile,slist))
 
     return test_result
     
@@ -84,9 +83,9 @@ def Run(name, logfile,listOfValue)  :
            
     Result = Test(name,logfile, listOfValue)   
     if Result :
-        print("%s : ."%name)
+        print("%s : SUCCESS"%name)
     else :
-        print("%s : F "%name)
+        print("%s : FAILURE "%name)
 ###############################################################################
 def FindPhrase(name, logfile, keyword) :
     """A  Test to search the logfile for a specific word or phrase
@@ -109,8 +108,7 @@ def FindPhrase(name, logfile, keyword) :
         olog.close()
         inputisgood = True
     except IOError :
-        print("[%s]...Sorry, I must skip this test."%name)
-        print("[%s]...The logfile is missing or doesn't have the correct name..."%name)
+        print("[%s]  ERROR: Could not locate logfile (%s).  The logfile may be missing or named incorrectly."%(name,logfile))
         inputisgood = False
 
     #If we could find the log file, then we run the test
@@ -120,14 +118,15 @@ def FindPhrase(name, logfile, keyword) :
             if keyword in line :
                 num_success += 1
                 result       = True
-                print("[%s] : %s"%(name,keyword))
+                break
         openlog.close()
 
         if result :
-            print("%s : ."%name)                 #prints the result
+            print("[%s] SUCCESS: The logfile (%s) contained following value: '%s'"%(name,logfile,keyword))
+            print("[%s] : SUCCESS"%name)
         else :
-            print("[%s]...I couldn't find '%s' in the logfile..."%(name,keyword))
-            print("%s : F "%name)
+            print("[%s] FAILURE: The logfile (%s) was missing the following value: '%s'"%(name,logfile,keyword))
+            print("%s : FAILURE"%name)
 
 ###############################################################################
 def DFdPhrase(name, logfile, keyword) :
@@ -151,8 +150,7 @@ def DFdPhrase(name, logfile, keyword) :
         olog.close()
         inputisgood = True
     except IOError :
-        print("[%s]...Sorry, I must skip this test."%name)
-        print("[%s]...The logfile is missing or doesn't have the correct name..."%name)
+        print("[%s]  ERROR: Could not locate logfile (%s).  The logfile may be missing or named incorrectly."%(name,logfile))
         inputisgood = False
 
     #If we could find the log file, then we run the test
@@ -161,14 +159,16 @@ def DFdPhrase(name, logfile, keyword) :
         for line in openlog :
             if keyword in line :
                 result       = True
-                print("[%s] : %s"%(name,keyword))
+                break
         openlog.close()
 
         if result :
-            print("%s : F"%name)                 #prints the result
+            print("[%s] FAILURE: The logfile (%s) contained following value: '%s'"%(name,logfile,keyword))
+            print("[%s] : FAILURE"%name)
         else :
             num_success += 1
-            print("%s : . "%name)
+            print("[%s] SUCCESS: The logfile (%s) was missing the following value: '%s'"%(name,logfile,keyword))
+            print("%s : SUCCESS"%name)
 
 ###############################################################################
 ###############################################################################
@@ -184,7 +184,6 @@ else:
 num_test = 0 
 num_success = 0
 print("Beginning of top-down testing\n\n")
-print("    . : successful test, F : failed test\n\n")
 ###############################################################################
 #---------------------Tools----------------------------------------------------
 #---------------------Tests----------------------------------------------------
